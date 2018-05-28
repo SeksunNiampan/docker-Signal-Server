@@ -1,0 +1,87 @@
+twilio: # Twilio gateway configuration
+  accountId: AC302d9ea2695e21cd17ce15bc510d28fd #fake
+  accountToken: febf5ccba3b4051dd7e7d0901a0fd404 #fake
+  numbers: # Numbers allocated in Twilio
+    - # First number
+      +66876157370 #fake
+  # messagingServicesId: 
+  localDomain: domain # Domain Twilio can connect back to for calls. Should be domain of your service.
+
+push:
+  queueSize: 200 # Size of push pending queue
+
+# redphone:
+#   authKey: 1234567890 # Deprecated
+
+server:
+  applicationConnectors:
+    - type: https
+      port: 8080
+      keyStorePath: ./ssl/example.keystore
+      keyStorePassword: example
+      #keyStoreType : PKCS12
+      validateCerts: false
+  adminConnectors:
+    - type: https
+      port: 8081
+      keyStorePath: ./ssl/example.keystore
+      keyStorePassword: example
+      #keyStoreType : PKCS12
+      validateCerts: false
+
+turn: # TURN server configuration
+  secret: 121654fjdfgdyesdfgfhgh # TURN server secret
+  uris:
+    - stun:yourdomain:80 #fake
+    - stun:yourdomain.com:443 #fake
+    - turn:yourdomain:443?transport=udp #fake
+    - turn:etc.com:80?transport=udp #fake
+
+cache: # Redis server configuration for cache cluster
+  url: "redis://redit:6379/1"
+
+directory: # Redis server configuration for directory cluster
+  url: "redis://redit:6379/0"
+
+messageStore: # Postgresql database configuration for message store
+  driverClass: org.postgresql.Driver
+  user: "signal"
+  password: "thepassword"
+  url: "jdbc:postgresql://postgresql_messagedb/messagedb"
+
+attachments: # AWS S3 configuration
+  accessKey: AKIAIG4ILCORMAJCS37A
+  accessSecret: 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
+  bucket: signal-attachments-buu
+
+profiles: # AWS S3 configuration
+  accessKey: AKIAIG4ILCORMAJCS37A
+  accessSecret: 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
+  bucket: signal-profiles-buu
+  region: us-east-1
+
+database: # Postgresql database configuration
+  driverClass: org.postgresql.Driver
+  user: "signal"
+  password: "thepassword"
+  url: "jdbc:postgresql://postgresql_accountdb/accountdb"
+  properties:
+    charSet: UTF-8
+
+# #apn: # Apple Push Notifications configuration
+#   bundleId:
+#   pushCertificate:
+#   pushKey:
+
+gcm: # GCM Configuration
+  senderId: 412918270132 #fake
+  apiKey: AIzaSyC8gPzceq2SPebZZWaD3I9OeqePyD9CUqk #fake
+
+logging:
+  level: INFO
+  appenders:
+    - type: file
+      currentLogFilename: /tmp/textsecureshserver.log
+      archivedLogFilenamePattern: /temp/textsecureserver-%d.log.gz
+      archivedFileCount: 5
+    - type: console

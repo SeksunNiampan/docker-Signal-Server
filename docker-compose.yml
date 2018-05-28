@@ -1,0 +1,77 @@
+version: '2'
+services:
+
+  postgresql_accountdb:
+    image: postgres:9.3.20
+    container_name: docker_postgresql_accountdb
+    restart: always
+    volumes:
+      - ./postgresql/accountdb.sql:/docker-entrypoint-initdb.d/accountdb.sql
+      - ./postgresql/accountdb:/var/lib/postgresql/data/
+    # ports:
+    #   - "5421:5432"
+    environment:
+      - POSTGRES_USER=signal
+      - POSTGRES_PASSWORD=thepassword
+      - POSTGRES_DB=accountdb
+
+  postgresql_messagedb:
+    image: postgres:9.3.20
+    container_name: docker_postgresql_messagedb
+    restart: always
+    volumes:
+      - ./postgresql/messagedb.sql:/docker-entrypoint-initdb.d/messagedb.sql
+      - ./postgresql/messagedb:/var/lib/postgresql/data/
+    # ports:
+    #   - "5422:5432"
+    environment:
+      - POSTGRES_USER=signal
+      - POSTGRES_PASSWORD=thepassword
+      - POSTGRES_DB=messagedb
+  
+  redit:
+    image: redis:3.2.8
+    container_name: docker_redis
+    restart: always
+    ports:
+      - "6379:6379"
+
+  signalserver:
+    build: ./signalserver
+    container_name: docker_signal-server
+    restart: always
+    # volumes:
+    #   - ./signalserver/Signal-Server:/Signal-Server
+    #   - ./signalserver/WebSocket-Resources:/WebSocket-Resources
+    #   - ./signalserver/ssl:/ssl
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+
+  minio:
+    image: minio/minio
+    ports:
+      - "9000:9000"
+    volumes:
+      - ./minio/.minio/data:/export
+      - ./minio/.minio/config:/root/.minio
+    environment:
+      - "MINIO_ACCESS_KEY=AKIAIG4ILCORMAJCS37A"
+      - "MINIO_SECRET_KEY=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"
+    command: server /export
+
+  createbuckets:
+    image: minio/mc
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      /usr/bin/mc config host add myminio https://minio:9000 AKIAIG4ILCORMAJCS37A u8cQx07PvHJS8/zvr7q3IFY+w2toIYIJQ7vm1ETH;
+      /usr/bin/mc rm -r --force myminio/signal-attachments-buu;
+      /usr/bin/mc rm -r --force myminio/signal-profiles-buu;
+      /usr/bin/mc mb myminio/signal-attachments-buu;
+      /usr/bin/mc mb myminio/signal-profiles-buu;
+      /usr/bin/mc policy public myminio/signal-attachments-buu;
+      /usr/bin/mc policy public myminio/signal-profiles-buu;
+      exit 0;
+      "
