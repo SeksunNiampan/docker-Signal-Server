@@ -34,10 +34,6 @@ RUN java -version
 
 COPY ./ssl /ssl
 
-# --> Install WebSocket-Resources <--
-COPY ./WebSocket-Resources /WebSocket-Resources
-RUN source /etc/profile.d/apache-maven.sh && cd /WebSocket-Resources && mvn clean install && mvn install:install-file -Dfile=./library/target/websocket-resources-0.5.3.jar -DgroupId=org.whispersystems -DartifactId=websocket-resources -Dversion=0.32 -Dpackaging=jar
-
 # --> Install Signal Server <--
 COPY ./Signal-Server /Signal-Server
 RUN source /etc/profile.d/apache-maven.sh && cd /Signal-Server && mvn install -DskipTests
