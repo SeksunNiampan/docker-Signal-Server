@@ -49,12 +49,12 @@ messageStore: # Postgresql database configuration for message store
   password: "thepassword"
   url: "jdbc:postgresql://postgresql_messagedb/messagedb"
 
-attachments: # AWS S3 configuration
+attachments: # MINIO configuration
   accessKey: AKIAIG4ILCORMAJCS37A
   accessSecret: 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
   bucket: signal-attachments-buu
 
-profiles: # AWS S3 configuration
+profiles: # MINIO configuration
   accessKey: AKIAIG4ILCORMAJCS37A
   accessSecret: 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
   bucket: signal-profiles-buu
